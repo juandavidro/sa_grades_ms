@@ -1,0 +1,196 @@
+#Test with: http://editor.swagger.io/
+
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Microservice for Grades
+  description: Ruby + MySQL
+  license:
+    name: Software Architecture 2018-I
+host: 192.168.99.101:4002
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /grades:
+    post:
+      summary: Creates a new grade
+      operationId: createGrade
+      parameters:
+        - name: grade
+          in: body
+          required: true
+          description: Grade Object
+          schema:
+            $ref: '#/definitions/GradeInput'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    get:
+      summary: Returns all grades
+      operationId: getAllGrades
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/GradeList'
+        '406':
+          description: Not Acceptable (Invalid Params)
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /grades/{id}:
+    get:
+      summary: Returns a grade with the given id
+      operationId: getGradeById
+      parameters:
+        - name: id
+          in: path
+          description: The id of the grade to be returned
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/Grade'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '406':
+            description: Not Acceptable (Invalid Params)
+            schema:
+              $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+    put:
+      summary: Updates a grade with the given id
+      operationId: updategrade
+      parameters:
+        - name: id
+          in: path
+          description: The id of the grade to be updated
+          required: true
+          type: integer
+        - name: grade
+          in: body
+          required: true
+          description: Grade Object
+          schema:
+            $ref: '#/definitions/GradeInput'
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '406':
+            description: Not Acceptable (Invalid Params)
+            schema:
+              $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+    delete:
+      summary: Deletes a grade with the given id
+      operationId: deleteGrade
+      parameters:
+        - name: id
+          in: path
+          description: The id of the grade to be deleted
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '406':
+            description: Not Acceptable (Invalid Params)
+            schema:
+              $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+definitions:
+
+  # grades
+  Grade:
+    type: object
+    properties:
+      id:
+        type: integer
+      student_id:
+        type: integer
+      course_code:
+        type: integer
+      grade:
+        type: float
+      teacher:
+        type: string
+
+  GradeInput:
+    type: object
+    properties:
+      student_id:
+        type: integer
+      course_code:
+        type: integer
+      grade:
+        type: float
+      teacher:ar  a
+        type: string
+
+  GradesList:
+    type: object
+    required:
+      - total
+      - list
+    properties:
+      total:
+        type: number
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/Grade'
+
+# Errors
+  ErrorModel:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      message:
+        type: string
+      code:
+        type: number
+      description:
+        type: object
