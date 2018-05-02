@@ -7,4 +7,6 @@ ADD Gemfile /grades-ms/Gemfile
 ADD Gemfile.lock /grades-ms/Gemfile.lock
 
 RUN bundle install
-ADD . /grades-ms
+ADD . /grades-
+
+EXPOSE 4002
